@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Log File Results</title>
+</head>
+<body>
+<div class="container">
+    <h2>Log File Analysis Results</h2>
+    <div>
+        <p>Total Errors: <span th:text="${errorCount}"></span></p>
+        <p>Total INFO: <span th:text="${infoCount}"></span></p>
+        <p>Total DEBUG: <span th:text="${debugCount}"></span></p>
+        <hr>
+        <p>NullPointerException: <span th:text="${nullPointerExceptionCount}"></span></p>
+        <p>SchedulerException: <span th:text="${schedulerExceptionCount}"></span></p>
+        <p>AccessException: <span th:text="${accessExceptionCount}"></span></p>
+        <p>InvalidFormatException: <span th:text="${invalidFormatExceptionCount}"></span></p>
+        <p>CloudClientException: <span th:text="${cloudClientExceptionCount}"></span></p>
+        <p>ValidationException: <span th:text="${validationExceptionCount}"></span></p>
+        <p>SuperCsvException: <span th:text="${superCsvExceptionCount}"></span></p>
+        <p>Other Exceptions: <span th:text="${otherExceptionCount}"></span></p>
+        <hr>
+        <h3>Error Lines</h3>
+        <pre th:each="line : ${errorLines}" th:text="${line}"></pre>
+        <h3>Exception Details</h3>
+        <pre th:each="exception : ${exceptionLines}" th:text="${exception}"></pre>
+    </div>
+</div>
+</body>
+</html>

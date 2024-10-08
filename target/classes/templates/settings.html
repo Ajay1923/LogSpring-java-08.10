@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Arial", sans-serif;
+            background: linear-gradient(to right, #FFD700, #FF6347);
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background-color: #581845;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            position: fixed;
+            top: 0;
+            left: 160px;
+            width: calc(100% - 160px);
+            z-index: 500;
+            box-sizing: border-box;
+        }
+        .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #004d40;
+        }
+        .sidebar {
+            margin: 0;
+            padding: 10px;
+            width: 160px;
+            background: linear-gradient(to right, #FFD700, #FF6347);
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            top: 0;
+            left: 0;
+            z-index: 999;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #ffffff;
+        }
+        .sidebar a {
+            display: block;
+            color: #ffffff;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .sidebar a.active,
+        .sidebar a:hover {
+            background-color: #004d40;
+        }
+        .content {
+            margin-left: 170px;
+            padding: 30px;
+            padding-top: 90px;
+            text-align: center;
+        }
+        .user-details-container {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .form-group {
+            margin: 10px 0;
+            width: 30%;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        @media screen and (max-width: 500px) {
+            .header {
+                width: 100%;
+                left: 0;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 50px 5px;
+            }
+            .content {
+                margin-left: 0;
+                margin-top: 40px;
+            }
+            .form-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        User Details
+        <button onclick="window.location.href='/login'" class="logout-btn">Logout</button>
+    </div>
+    
+    <div class="sidebar">
+        <h2><a href="/webpage">File Upload</a></h2>
+        <h2><a href="/statistics">Statistics</a></h2>
+        <h2><a href="/settings" class="active">User Details</a></h2>
+    </div>
+
+    <div class="content">
+        <h1>User Information </h1>
+        <div class="user-details-container">
+            <div class="success-message" th:text="${message}"></div>
+            <div class="error-message" th:text="${error}"></div>
+
+            <div th:if="${user != null}">
+                <form action="/Logging_cred" method="POST">
+                    <input type="hidden" id="userId" name="id" th:value="${user.id}" required>
+                    
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="firstName" th:value="${user.firstName}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" id="middle_name" name="middleName" th:value="${user.middleName}">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="lastName" th:value="${user.lastName}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth:</label>
+                        <input type="date" id="date_of_birth" name="dateOfBirth" th:value="${user.dateOfBirth}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select</option>
+                            <option value="male" th:selected="${user.gender == 'male'}">Male</option>
+                            <option value="female" th:selected="${user.gender == 'female'}">Female</option>
+                            <option value="other" th:selected="${user.gender == 'other'}">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email ID:</label>
+                        <input type="email" id="email" name="email" th:value="${user.email}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile_number">Mobile Number:</label>
+                        <input type="tel" id="mobile_number" name="mobileNumber" th:value="${user.mobileNumber}" required>
+                    </div>
+                    
+                    <div style="width: 100%; text-align: center;">
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div th:if="${user == null}">
+                <p>User not found. Please select a user to edit.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

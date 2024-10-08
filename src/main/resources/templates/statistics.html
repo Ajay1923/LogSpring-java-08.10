@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Arial", sans-serif;
+            background: linear-gradient(to right, #FFD700, #FF6347);
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background-color: #581845;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            position: fixed;
+            top: 0;
+            left: 160px;
+            width: calc(100% - 160px);
+            z-index: 500;
+            box-sizing: border-box;
+        }
+        .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #004d40;
+        }
+        .sidebar {
+            margin: 0;
+            padding: 10px;
+            width: 160px;
+            background: linear-gradient(to right, #FFD700, #FF6347);
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            overflow-y: auto; 
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #ffffff;
+        }
+        .sidebar a {
+            display: block;
+            color: #ffffff;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .sidebar a.active,
+        .sidebar a:hover {
+            background-color: #004d40;
+        }
+        .content {
+            margin-left: 170px;
+            padding: 30px;
+            padding-top: 90px;
+            box-sizing: border-box;
+        }
+        .log-container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: calc(100% - 60px); /* Adjusting for the sidebar and padding */
+            margin: 0 auto; /* Center the container */
+            overflow-y: auto; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+            text-align: right; /* Aligns the filter to the right */
+        }
+        .filter-container label, 
+        .filter-container input,
+        .filter-container button {
+            margin-left: 10px; /* Adds some spacing between the elements */
+        }
+        @media screen and (max-width: 500px) {
+            .header {
+                width: 100%;
+                left: 0;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 50px 5px;
+            }
+            .content {
+                margin-left: 0;
+                margin-top: 40px;
+            }
+            .filter-container {
+                text-align: left; /* Adjusts on small screens to go back to left alignment */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Statistics
+        <button onclick="window.location.href='/login'" class="logout-btn">Logout</button>
+    </div>
+    
+    <div class="sidebar">
+        <h2><a href="/webpage">File Upload</a></h2>
+        <h2><a href="/statistics" class="active">Statistics</a></h2>
+        <h2><a href="/settings">User Details</a></h2>
+    </div>
+    
+    <div class="content">
+        <div class="filter-container">
+            <label for="from-date">From:</label>
+            <input type="date" id="from-date">
+            <label for="to-date">To:</label>
+            <input type="date" id="to-date">
+            <button id="filter-btn">Filter</button>
+        </div>
+
+        <div class="log-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Uploaded File Name</th>
+                        <th>Log Codes</th>
+                        <th>Resulting File Name</th>
+                        <th>Downloaded Exception</th>
+                        <th>Status</th>
+                        <th>AccessException</th>
+                        <th>CloudClientException</th>
+                        <th>InvalidFormatException</th>
+                        <th>NullPointerException</th>
+                        <th>SchedulerException</th>
+                        <th>SuperCsvException</th>
+                    </tr>
+                </thead>
+                <tbody id="log-entries">
+                    <th:block th:each="entry : ${statistics}">
+                        <tr>
+                            <td th:text="${entry.timestamp}"></td>
+                            <td th:text="${entry.uploadedFileName}"></td>
+                            <td th:text="${entry.logCodes}"></td>
+                            <td th:text="${entry.resultingFileName}"></td>
+                            <td th:text="${entry.downloadedException != null ? entry.downloadedException : 'No Exception Downloaded'}"></td>
+                            <td th:text="${entry.status}"></td>
+                            <td th:text="${entry.accessExceptionCount}"></td>
+                            <td th:text="${entry.cloudClientExceptionCount}"></td>
+                            <td th:text="${entry.invalidFormatExceptionCount}"></td>
+                            <td th:text="${entry.nullPointerExceptionCount}"></td>
+                            <td th:text="${entry.schedulerExceptionCount}"></td>
+                            <td th:text="${entry.superCsvExceptionCount}"></td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('filter-btn').addEventListener('click', function() {
+        const fromDate = document.getElementById('from-date').value;
+        const toDate = document.getElementById('to-date').value;
+        console.log(`Filtering logs from ${fromDate} to ${toDate}`);
+
+        let url = '/api/statistics';
+        if (fromDate && toDate) {
+            url += `?from=${fromDate}&to=${toDate}`;
+        }
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length === 0) {
+                    console.warn('No data found for the selected date range.');
+                    document.getElementById('log-entries').innerHTML = '<tr><td colspan="12">No entries during those days</td></tr>';
+                } else {
+                    populateLogEntries(data);
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    function populateLogEntries(logEntries) {
+        const logEntriesContainer = document.getElementById('log-entries');
+        logEntriesContainer.innerHTML = ''; // Clear previous entries
+
+        logEntries.forEach(entry => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${entry.timestamp}</td>
+                <td>${entry.uploadedFileName}</td>
+                <td>${entry.logCodes}</td>
+                <td>${entry.resultingFileName}</td>
+                <td>${entry.downloadedException !== null ? entry.downloadedException : 'No Exception Downloaded'}</td>
+                <td>${entry.status}</td>
+                <td>${entry.accessExceptionCount}</td>
+                <td>${entry.cloudClientExceptionCount}</td>
+                <td>${entry.invalidFormatExceptionCount}</td>
+                <td>${entry.nullPointerExceptionCount}</td>
+                <td>${entry.schedulerExceptionCount}</td>
+                <td>${entry.superCsvExceptionCount}</td>
+            `;
+            logEntriesContainer.appendChild(row);
+        });
+    }
+    </script>
+</body>
+</html>

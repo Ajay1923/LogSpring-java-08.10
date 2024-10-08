@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Log File Analyzer</title>
+    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+	    body {
+	        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+	        margin: 0;
+	        display: flex;
+	        justify-content: center;
+	        align-items: center;
+	        height: 100vh;
+	        color: #333;
+	    }
+
+	    .container {
+	        max-width: 600px;
+	        padding: 30px;
+	        background-color: #fff;
+	        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+	        border-radius: 10px;
+	        text-align: center;
+	        animation: fadeIn 1s ease-in-out;
+	    }
+
+	    input[type="file"] {
+	        margin-bottom: 20px;
+	        padding: 10px;
+	        border: 2px dashed #ddd;
+	        border-radius: 5px;
+	        background-color: #f9f9f9;
+	        transition: border-color 0.3s ease;
+	    }
+
+	    input[type="file"]:hover {
+	        border-color: #007bff;
+	    }
+
+	    button {
+	        padding: 12px 25px;
+	        background-color: #ff7e5f;
+	        color: #fff;
+	        border: none;
+	        cursor: pointer;
+	        border-radius: 5px;
+	        font-size: 16px;
+	        transition: background-color 0.3s ease, transform 0.2s ease;
+	    }
+
+	    button:hover {
+	        background-color: #eb6754;
+	        transform: scale(1.05);
+	    }
+
+	    button:active {
+	        background-color: #d95d4b;
+	    }
+
+	    #output {
+	        text-align: left;
+	        white-space: pre-wrap;
+	        margin-top: 20px;
+	        padding: 15px;
+	        background-color: #f4f4f4;
+	        border-radius: 5px;
+	        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+	    }
+
+	    .message {
+	        color: #ff4c4c;
+	        font-weight: bold;
+	    }
+
+	    h1 {
+	        margin-bottom: 20px;
+	        color: #333;
+	        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	    }
+
+	    @keyframes fadeIn {
+	        from {
+	            opacity: 0;
+	            transform: translateY(-20px);
+	        }
+	        to {
+	            opacity: 1;
+	            transform: translateY(0);
+	        }
+	    }
+	</style>
+
+    
+</head>
+<body>
+<div class="container">
+    <h1>Log File Analyzer</h1>
+    
+    <!-- Form to upload the log file -->
+    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="logfile" accept=".log"><br><br>
+        <button type="submit">Upload Log File</button>
+    </form>
+
+    <!-- Display message if available -->
+    <div th:if="${message != null}" class="message">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- Display processed log details if available -->
+    <div th:if="${counts != null}" id="output">
+        <h2>Processed Log Details</h2>
+        <ul>
+            <li>Total Errors: <span th:text="${counts['ERROR']}"></span></li>
+            <li>Total Info: <span th:text="${counts['INFO']}"></span></li>
+            <li>Total Debug: <span th:text="${counts['DEBUG']}"></span></li>
+            <li>NullPointerException: <span th:text="${counts['NullPointerException']}"></span></li>
+            <li>SchedulerException: <span th:text="${counts['SchedulerException']}"></span></li>
+            <li>AccessException: <span th:text="${counts['AccessException']}"></span></li>
+            <li>InvalidFormatException: <span th:text="${counts['InvalidFormatException']}"></span></li>
+            <li>CloudClientException: <span th:text="${counts['CloudClientException']}"></span></li>
+            <li>ValidationException: <span th:text="${counts['ValidationException']}"></span></li>
+            <li>SuperCsvException: <span th:text="${counts['SuperCsvException']}"></span></li>
+            <li>Other Exceptions: <span th:text="${counts['Other Exceptions']}"></span></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
